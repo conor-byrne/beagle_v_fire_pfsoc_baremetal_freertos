@@ -1,7 +1,10 @@
-# PolarFire SoC Baremetal FreeRTOS Firmware
+# Beagle V Fire PolarFire SoC Baremetal FreeRTOS
 
-This started life as a copy of Microchip's mpfs-mac-mcc-stack and mpfs-uart-mac-freertos_lwip example projects.
-It has been modified to use an updated FreeRTOS and use FreeRTOS-Plus-TCP instead of lwip.
+This started life as a copy of Microchip's mpfs-mac-mcc-stack and mpfs-uart-mac-freertos_lwip example projects from the
+[polarfire-soc-bare-metal-examples](https://github.com/polarfire-soc/polarfire-soc-bare-metal-examples) repo.
+It has been modified to use an updated FreeRTOS and use FreeRTOS-Plus-TCP instead of lwIP.
+
+Code runs on the U54_1 hart.
 
 ## BeagleV-Fire GPIO Mapping
 
@@ -42,11 +45,11 @@ while(btn == 1);
 
 ## Middleware versions
 
-| Library           | Version |
-|-------------------|---------|
-| BACnet Stack      | 1.4.2   |
-| FreeRTOS          | 11.1    |
-| FreeRTOS-Plus-TCP | 4.3.3   |
+| Library           | Version | Link                                                                                           |
+|-------------------|---------|------------------------------------------------------------------------------------------------|
+| BACnet Stack      | 1.4.2   | [https://github.com/bacnet-stack/bacnet-stack](https://github.com/bacnet-stack/bacnet-stack)   |
+| FreeRTOS          | 11.1    | [https://github.com/FreeRTOS/FreeRTOS-Kernel](https://github.com/FreeRTOS/FreeRTOS-Kernel)     |
+| FreeRTOS-Plus-TCP | 4.3.3   | [https://github.com/FreeRTOS/FreeRTOS-Plus-TCP](https://github.com/FreeRTOS/FreeRTOS-Plus-TCP) |
 
 ## FreeRTOS
 
@@ -169,7 +172,7 @@ There are two config settings to enable debug messages in `FreeRTOSIPConfig.h`.
 
 ### Peripheral Example Tasks
 
-Application tasks have been written to showcase I2C and SPI peripheral interfacing.
+Application tasks have been written to showcase I2C and SPI peripheral interfacing. Values are printed out via UART0.
 See `src/application/common/application_tasks.c` for more.
 
 The peripherals used are:
@@ -191,9 +194,52 @@ These can be enabled by uncommenting the desired define at the top of `src/appli
 
 Datasheets are located in `notes/`.
 
+Example output with all three peripherals enabled:
+
+```txt
+RTC: Thursday, 2026/03/05 00:31:27
+
+Temperature: 26.63 deg C
+   Pressure: 96286.85 Pa
+   Humidity: 42.589 %RH
+
+ADC[0]: 0.0
+ADC[1]: 0.5
+ADC[2]: 0.0
+ADC[3]: 0.5
+ADC[4]: 0.5
+ADC[5]: 0.0
+ADC[6]: 0.0
+ADC[7]: 0.0
+```
+
+#### Pinouts
+
+SPI and I2C pins are in the P9 cape header, see [Beagle V documentation](https://docs.beagleboard.org/boards/beaglev/fire/01-introduction.html).
+
+##### SPI 0
+
+| Name | Cape Header Pin |
+|:-----|:----------------|
+| CLK  | P9_22           |
+| SS1  | P9_17           |
+| DO   | P9_18           |
+| DI   | P9_21           |
+
+##### I2C 0
+
+| Name | Cape Header Pin |
+|:-----|:----------------|
+| SCL  | P9_19           |
+| SDA  | P9_20           |
+
 ## Webserver Task
 
 A sample webserver task is used to show TCP capabilities. Simply enter the device's IP in your browser.
+
+![webserver screenshot](./notes/images/webserver.png)
+
+The RTC functionality is disabled, but can be enabled by using the mss-rtc driver. Requests are sent every 500ms.
 
 ### BACnet Task
 
